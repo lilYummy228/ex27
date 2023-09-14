@@ -33,40 +33,37 @@ namespace ex27
                 switch (command.ToLower())
                 {
                     case CommandAddDossier:
-                        GetDossier(ref namesOfWorkers, ref postsOfWorkers);
+                        Console.Write("Введите вашу фамилию: ");
+                        string enteredLastName = Console.ReadLine();
+                        GetDossier(ref namesOfWorkers, ref postsOfWorkers, enteredLastName);
                         break;
 
                     case CommandWriteAllDossier:
+
+                        if (SetMessageAboutVoid(ref namesOfWorkers)) break;
+
                         WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandDeleteDossier:
+
+                        if (SetMessageAboutVoid(ref namesOfWorkers)) break;
+
                         DeleteDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandSearchByLastName:
-                        Console.Write("Введите фамилию: ");
+
+                        if (SetMessageAboutVoid(ref namesOfWorkers)) break;
+
+                        Console.Write("Введите искомую фамилию: ");
                         string lastName = Console.ReadLine();
-                        bool isFound = true;
-
-                        for (int i = 0; i < namesOfWorkers.Length; i++)
-                        {
-                            if (lastName == namesOfWorkers[i])
-                            {
-                                isFound = false;
-                                Console.WriteLine($"{i + 1}. {namesOfWorkers[i]} - {postsOfWorkers[i]}");
-                            }
-                        }
-
-                        if (isFound)
-                        {
-                            Console.Write("Фамилия не найдена...");
-                        }
-                        
+                        SearchByLastName(ref namesOfWorkers, ref postsOfWorkers, lastName);
                         break;
 
                     case CommandExit:
                         isOpen = false;
+                        Console.Write("Вы вышли из программы...");
                         break;
 
                     default:
@@ -79,10 +76,8 @@ namespace ex27
             }
         }
 
-        static void GetDossier(ref string[] names, ref string[] posts)
+        static void GetDossier(ref string[] names, ref string[] posts, string lastName)
         {
-            Console.Write("Введите ваши ФИО: ");
-            string enteredName = Console.ReadLine();
             string[] tempName = new string[names.Length + 1];
 
             for (int i = 0; i < names.Length; i++)
@@ -90,7 +85,7 @@ namespace ex27
                 tempName[i] = names[i];
             }
 
-            tempName[tempName.Length - 1] = enteredName;
+            tempName[tempName.Length - 1] = lastName;
             names = tempName;
             Console.Write("Введите вашу должность: ");
             string enteredPost = Console.ReadLine();
@@ -103,12 +98,12 @@ namespace ex27
 
             tempPost[tempPost.Length - 1] = enteredPost;
             posts = tempPost;
-            Console.WriteLine($"{enteredName} успешно добавлен.");
+            Console.WriteLine($"{lastName} успешно добавлен.");
         }
 
         static void WriteAllDossier(ref string[] names, ref string[] posts)
         {
-            Console.WriteLine("Список досье.");
+            Console.WriteLine("Список досье:");
 
             for (int i = 0; i < names.Length; i++)
             {
@@ -161,6 +156,38 @@ namespace ex27
 
                 posts = tempList;
                 Console.Write($"Удаление досье под номером {deletedNumberOfDossier} прошло успешно...");
+            }
+        }
+
+        static void SearchByLastName(ref string[] names, ref string[] posts, string lastName)
+        {
+            bool isFound = true;
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                if (lastName == names[i])
+                {
+                    isFound = false;
+                    Console.WriteLine($"{i + 1}. {names[i]} - {posts[i]}");
+                }
+            }
+
+            if (isFound)
+            {
+                Console.Write("Фамилия не найдена...");
+            }
+        }
+
+        static bool SetMessageAboutVoid(ref string[] names)
+        {
+            if (names.Length < 1)
+            {
+                Console.Write("Список досье пуст...");
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }
