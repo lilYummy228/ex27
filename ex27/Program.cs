@@ -34,31 +34,33 @@ namespace ex27
                 {
                     case CommandAddDossier:
                         Console.Write("Введите вашу фамилию: ");
-                        string enteredLastName = Console.ReadLine();
-                        GetDossier(ref namesOfWorkers, ref postsOfWorkers, enteredLastName);
+                        string enteredName = Console.ReadLine();
+                        GetDossier(ref namesOfWorkers, enteredName);
+                        Console.Write("Введите вашу должность: ");
+                        string enteredPost = Console.ReadLine();
+                        GetDossier(ref postsOfWorkers, enteredPost);
+                        Console.WriteLine($"{enteredName} на должность {enteredPost} успешно добавлен.");
                         break;
 
                     case CommandWriteAllDossier:
-
                         if (SetMessageAboutVoid(ref namesOfWorkers)) break;
 
                         WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandDeleteDossier:
-
                         if (SetMessageAboutVoid(ref namesOfWorkers)) break;
 
-                        DeleteDossier(ref namesOfWorkers, ref postsOfWorkers);
+                        Console.SetCursorPosition(0, 8);
+                        WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
+                        Console.SetCursorPosition(0, 0);
+                        DeleteDossier(ref namesOfWorkers);
                         break;
 
                     case CommandSearchByLastName:
-
                         if (SetMessageAboutVoid(ref namesOfWorkers)) break;
 
-                        Console.Write("Введите искомую фамилию: ");
-                        string lastName = Console.ReadLine();
-                        SearchByLastName(ref namesOfWorkers, ref postsOfWorkers, lastName);
+                        SearchByLastName(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandExit:
@@ -76,29 +78,17 @@ namespace ex27
             }
         }
 
-        static void GetDossier(ref string[] names, ref string[] posts, string lastName)
+        static void GetDossier(ref string[] tempDossier, string enteredValue)
         {
-            string[] tempName = new string[names.Length + 1];
+            string[] tempArray = new string[tempDossier.Length + 1];
 
-            for (int i = 0; i < names.Length; i++)
+            for (int i = 0; i < tempDossier.Length; i++)
             {
-                tempName[i] = names[i];
+                tempArray[i] = tempDossier[i];
             }
 
-            tempName[tempName.Length - 1] = lastName;
-            names = tempName;
-            Console.Write("Введите вашу должность: ");
-            string enteredPost = Console.ReadLine();
-            string[] tempPost = new string[posts.Length + 1];
-
-            for (int i = 0; i < posts.Length; i++)
-            {
-                tempPost[i] = posts[i];
-            }
-
-            tempPost[tempPost.Length - 1] = enteredPost;
-            posts = tempPost;
-            Console.WriteLine($"{lastName} успешно добавлен.");
+            tempArray[tempArray.Length - 1] = enteredValue;
+            tempDossier = tempArray;
         }
 
         static void WriteAllDossier(ref string[] names, ref string[] posts)
@@ -111,56 +101,40 @@ namespace ex27
             }
         }
 
-        static void DeleteDossier(ref string[] names, ref string[] posts)
+        static void DeleteDossier(ref string[] tempDossier)
         {
-            Console.SetCursorPosition(0, 8);
-            WriteAllDossier(ref names, ref posts);
-            Console.SetCursorPosition(0, 0);
             Console.Write("Введите номер досье, которое хотите удалить: ");
             int deletedNumberOfDossier = Convert.ToInt32(Console.ReadLine());
             string tempElement;
-            string[] tempList = new string[names.Length - 1];
+            string[] tempList = new string[tempDossier.Length - 1];
 
-            if (deletedNumberOfDossier < 0 || deletedNumberOfDossier > names.Length)
+            if (deletedNumberOfDossier < 0 || deletedNumberOfDossier > tempDossier.Length)
             {
                 Console.Write("Досье под таким номером не существует...");
             }
             else
             {
-
-                for (int i = deletedNumberOfDossier - 1; i < names.Length - 1; i++)
+                for (int i = deletedNumberOfDossier - 1; i < tempDossier.Length - 1; i++)
                 {
-                    tempElement = names[i];
-                    names[i] = names[i + 1];
-                    names[i + 1] = tempElement;
+                    tempElement = tempDossier[i];
+                    tempDossier[i] = tempDossier[i + 1];
+                    tempDossier[i + 1] = tempElement;
                 }
 
-                for (int i = deletedNumberOfDossier - 1; i < posts.Length - 1; i++)
+                for (int i = 0; i < tempDossier.Length - 1; i++)
                 {
-                    tempElement = posts[i];
-                    posts[i] = posts[i + 1];
-                    posts[i + 1] = tempElement;
+                    tempList[i] = tempDossier[i];
                 }
 
-                for (int i = 0; i < names.Length - 1; i++)
-                {
-                    tempList[i] = names[i];
-                }
-
-                names = tempList;
-
-                for (int i = 0; i < posts.Length - 1; i++)
-                {
-                    tempList[i] = posts[i];
-                }
-
-                posts = tempList;
+                tempDossier = tempList;
                 Console.Write($"Удаление досье под номером {deletedNumberOfDossier} прошло успешно...");
             }
         }
 
-        static void SearchByLastName(ref string[] names, ref string[] posts, string lastName)
+        static void SearchByLastName(ref string[] names, ref string[] posts)
         {
+            Console.Write("Введите искомую фамилию: ");
+            string lastName = Console.ReadLine();
             bool isFound = true;
 
             for (int i = 0; i < names.Length; i++)
