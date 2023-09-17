@@ -20,6 +20,8 @@ namespace ex27
 
             string[] namesOfWorkers = new string[0];
             string[] postsOfWorkers = new string[0];
+            string lastName = "фамилию";
+            string post = "должность";
             bool isOpen = true;
 
             while (isOpen)
@@ -33,39 +35,40 @@ namespace ex27
                 switch (command.ToLower())
                 {
                     case CommandAddDossier:
-                        Console.Write("Введите вашу фамилию: ");
-                        string enteredName = Console.ReadLine();
-                        GetDossier(ref namesOfWorkers, enteredName);
-                        Console.Write("Введите вашу должность: ");
-                        string enteredPost = Console.ReadLine();
-                        GetDossier(ref postsOfWorkers, enteredPost);
-                        Console.WriteLine($"{enteredName} на должность {enteredPost} успешно добавлен.");
+                        GetDossier(ref namesOfWorkers, lastName);
+                        GetDossier(ref postsOfWorkers, post);
                         break;
 
                     case CommandWriteAllDossier:
-                        if (SetMessageAboutVoid(ref namesOfWorkers)) break;
+                        if (SetMessageAboutVoid(namesOfWorkers))
+                        {
+                            break;
+                        }
 
                         WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandDeleteDossier:
-                        if (SetMessageAboutVoid(ref namesOfWorkers)) break;
+                        if (SetMessageAboutVoid(namesOfWorkers))
+                        {
+                            break;
+                        }
 
-                        Console.SetCursorPosition(0, 8);
                         WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
-                        Console.SetCursorPosition(0, 0);
                         DeleteDossier(ref namesOfWorkers);
                         break;
 
                     case CommandSearchByLastName:
-                        if (SetMessageAboutVoid(ref namesOfWorkers)) break;
+                        if (SetMessageAboutVoid(namesOfWorkers))
+                        {
+                            break;
+                        }
 
-                        SearchByLastName(ref namesOfWorkers, ref postsOfWorkers);
+                        SearchByLastName(namesOfWorkers);
                         break;
 
                     case CommandExit:
-                        isOpen = false;
-                        Console.Write("Вы вышли из программы...");
+                        ExitTheProgram(isOpen);
                         break;
 
                     default:
@@ -78,8 +81,10 @@ namespace ex27
             }
         }
 
-        static void GetDossier(ref string[] tempDossier, string enteredValue)
+        static void GetDossier(ref string[] tempDossier, string input)
         {
+            Console.Write($"Введите вашу {input}: ");
+            string enteredValue = Console.ReadLine();
             string[] tempArray = new string[tempDossier.Length + 1];
 
             for (int i = 0; i < tempDossier.Length; i++)
@@ -93,7 +98,8 @@ namespace ex27
 
         static void WriteAllDossier(ref string[] names, ref string[] posts)
         {
-            Console.WriteLine("Список досье:");
+            Console.SetCursorPosition(0, 8);
+            Console.WriteLine("Список всех досье:");
 
             for (int i = 0; i < names.Length; i++)
             {
@@ -103,6 +109,7 @@ namespace ex27
 
         static void DeleteDossier(ref string[] tempDossier)
         {
+            Console.SetCursorPosition(0, 0);
             Console.Write("Введите номер досье, которое хотите удалить: ");
             int deletedNumberOfDossier = Convert.ToInt32(Console.ReadLine());
             string tempElement;
@@ -131,7 +138,7 @@ namespace ex27
             }
         }
 
-        static void SearchByLastName(ref string[] names, ref string[] posts)
+        static string[] SearchByLastName(string[] names)
         {
             Console.Write("Введите искомую фамилию: ");
             string lastName = Console.ReadLine();
@@ -142,7 +149,7 @@ namespace ex27
                 if (lastName == names[i])
                 {
                     isFound = false;
-                    Console.WriteLine($"{i + 1}. {names[i]} - {posts[i]}");
+                    Console.WriteLine($"{i + 1}. {names[i]}");
                 }
             }
 
@@ -150,9 +157,11 @@ namespace ex27
             {
                 Console.Write("Фамилия не найдена...");
             }
+
+            return names;
         }
 
-        static bool SetMessageAboutVoid(ref string[] names)
+        static bool SetMessageAboutVoid(string[] names)
         {
             if (names.Length < 1)
             {
@@ -163,6 +172,12 @@ namespace ex27
             {
                 return false;
             }
+        }
+
+        static bool ExitTheProgram(bool isOpen)
+        {
+            Console.Write("Вы вышли из программы...");
+            return false;
         }
     }
 }
