@@ -67,7 +67,6 @@ namespace ex27
             string name = Console.ReadLine();
             Console.Write("Введите вашу должность: ");
             string post = Console.ReadLine();
-
             names = IncreaseArray(names, name);
             posts = IncreaseArray(posts, post);     
         }
