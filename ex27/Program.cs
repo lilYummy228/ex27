@@ -20,8 +20,6 @@ namespace ex27
 
             string[] namesOfWorkers = new string[0];
             string[] postsOfWorkers = new string[0];
-            string lastName = "фамилию";
-            string post = "должность";
             bool isOpen = true;
 
             while (isOpen)
@@ -35,40 +33,23 @@ namespace ex27
                 switch (command.ToLower())
                 {
                     case CommandAddDossier:
-                        GetDossier(ref namesOfWorkers, lastName);
-                        GetDossier(ref postsOfWorkers, post);
+                        AddDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandWriteAllDossier:
-                        if (SetMessageAboutVoid(namesOfWorkers))
-                        {
-                            break;
-                        }
-
                         WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandDeleteDossier:
-                        if (SetMessageAboutVoid(namesOfWorkers))
-                        {
-                            break;
-                        }
-
-                        WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
-                        DeleteDossier(ref namesOfWorkers);
+                        DeleteDossier(ref namesOfWorkers, ref postsOfWorkers);
                         break;
 
                     case CommandSearchByLastName:
-                        if (SetMessageAboutVoid(namesOfWorkers))
-                        {
-                            break;
-                        }
-
                         SearchByLastName(namesOfWorkers);
                         break;
 
                     case CommandExit:
-                        ExitTheProgram(isOpen);
+                        isOpen = false;
                         break;
 
                     default:
@@ -80,88 +61,112 @@ namespace ex27
                 Console.Clear();
             }
         }
-
-        static void GetDossier(ref string[] tempDossier, string input)
+        static void AddDossier(ref string[] names, ref string[] posts)
         {
-            Console.Write($"Введите вашу {input}: ");
-            string enteredValue = Console.ReadLine();
-            string[] tempArray = new string[tempDossier.Length + 1];
+            Console.Write("Введите вашу фамилию: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите вашу должность: ");
+            string post = Console.ReadLine();
 
-            for (int i = 0; i < tempDossier.Length; i++)
+            names = IncreaseArray(names, name);
+            posts = IncreaseArray(posts, post);
+            
+        }
+
+        static string[] IncreaseArray(string[] array, string enteredValue)
+        {
+            string[] tempArray = new string[array.Length + 1];
+
+            for (int i = 0; i < array.Length; i++)
             {
-                tempArray[i] = tempDossier[i];
+                tempArray[i] = array[i];
             }
 
-            tempArray[tempArray.Length - 1] = enteredValue;
-            tempDossier = tempArray;
+            tempArray[tempArray.Length - 1] = enteredValue.ToLower();
+            array = tempArray;
+            return array;
         }
 
         static void WriteAllDossier(ref string[] names, ref string[] posts)
         {
-            Console.SetCursorPosition(0, 8);
-            Console.WriteLine("Список всех досье:");
-
-            for (int i = 0; i < names.Length; i++)
+            if (IsEmpty(names))
             {
-                Console.WriteLine($"{i + 1}. {names[i]} - {posts[i]}");
+
+            }
+            else
+            {
+                Console.WriteLine("Список всех досье:");
+
+                for (int i = 0; i < names.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {names[i].ToUpper()} - {posts[i].ToUpper()}");
+                }
             }
         }
 
-        static void DeleteDossier(ref string[] tempDossier)
+        static void DeleteDossier(ref string[] names, ref string[] posts)
         {
+            Console.SetCursorPosition(0, 8);
+            WriteAllDossier(ref names, ref posts);
             Console.SetCursorPosition(0, 0);
             Console.Write("Введите номер досье, которое хотите удалить: ");
             int deletedNumberOfDossier = Convert.ToInt32(Console.ReadLine());
             string tempElement;
-            string[] tempList = new string[tempDossier.Length - 1];
+            string[] tempList = new string[names.Length - 1];
 
-            if (deletedNumberOfDossier < 0 || deletedNumberOfDossier > tempDossier.Length)
+            if (deletedNumberOfDossier < 0 || deletedNumberOfDossier > names.Length)
             {
                 Console.Write("Досье под таким номером не существует...");
             }
             else
             {
-                for (int i = deletedNumberOfDossier - 1; i < tempDossier.Length - 1; i++)
+                for (int i = deletedNumberOfDossier - 1; i < names.Length - 1; i++)
                 {
-                    tempElement = tempDossier[i];
-                    tempDossier[i] = tempDossier[i + 1];
-                    tempDossier[i + 1] = tempElement;
+                    tempElement = names[i];
+                    names[i] = names[i + 1];
+                    names[i + 1] = tempElement;
                 }
 
-                for (int i = 0; i < tempDossier.Length - 1; i++)
+                for (int i = 0; i < names.Length - 1; i++)
                 {
-                    tempList[i] = tempDossier[i];
+                    tempList[i] = names[i];
                 }
 
-                tempDossier = tempList;
+                names = tempList;
                 Console.Write($"Удаление досье под номером {deletedNumberOfDossier} прошло успешно...");
             }
         }
 
-        static string[] SearchByLastName(string[] names)
+        static void SearchByLastName(string[] names)
         {
-            Console.Write("Введите искомую фамилию: ");
-            string lastName = Console.ReadLine();
-            bool isFound = true;
-
-            for (int i = 0; i < names.Length; i++)
+            if (IsEmpty(names))
             {
-                if (lastName == names[i])
+
+            }
+            else
+            {
+                Console.Write("Введите искомую фамилию: ");
+                string lastName = Console.ReadLine();
+                bool isFound = true;
+
+                for (int i = 0; i < names.Length; i++)
                 {
-                    isFound = false;
-                    Console.WriteLine($"{i + 1}. {names[i]}");
+                    if (lastName.ToLower() == names[i])
+                    {
+                        isFound = false;
+                        Console.WriteLine($"{i + 1}. {names[i].ToUpper()}");
+                    }
+                }
+
+                if (isFound)
+                {
+                    Console.Write("Фамилия не найдена...");
                 }
             }
 
-            if (isFound)
-            {
-                Console.Write("Фамилия не найдена...");
-            }
-
-            return names;
         }
 
-        static bool SetMessageAboutVoid(string[] names)
+        static bool IsEmpty(string[] names)
         {
             if (names.Length < 1)
             {
@@ -172,12 +177,6 @@ namespace ex27
             {
                 return false;
             }
-        }
-
-        static bool ExitTheProgram(bool isOpen)
-        {
-            Console.Write("Вы вышли из программы...");
-            return false;
         }
     }
 }
