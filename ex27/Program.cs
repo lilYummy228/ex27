@@ -45,7 +45,7 @@ namespace ex27
                         break;
 
                     case CommandSearchByLastName:
-                        SearchByLastName(namesOfWorkers);
+                        SearchByLastName(namesOfWorkers, postsOfWorkers);
                         break;
 
                     case CommandExit:
@@ -63,14 +63,13 @@ namespace ex27
         }
         static void AddDossier(ref string[] names, ref string[] posts)
         {
-            Console.Write("Введите вашу фамилию: ");
+            Console.Write("Введите ваши ФИО: ");
             string name = Console.ReadLine();
             Console.Write("Введите вашу должность: ");
             string post = Console.ReadLine();
 
             names = IncreaseArray(names, name);
-            posts = IncreaseArray(posts, post);
-            
+            posts = IncreaseArray(posts, post);     
         }
 
         static string[] IncreaseArray(string[] array, string enteredValue)
@@ -137,7 +136,7 @@ namespace ex27
             }
         }
 
-        static void SearchByLastName(string[] names)
+        static void SearchByLastName(string[] names, string[] posts)
         {
             if (IsEmpty(names))
             {
@@ -147,20 +146,22 @@ namespace ex27
             {
                 Console.Write("Введите искомую фамилию: ");
                 string lastName = Console.ReadLine();
-                bool isFound = true;
+                bool isFound = false;
 
                 for (int i = 0; i < names.Length; i++)
                 {
-                    if (lastName.ToLower() == names[i])
+                    string[] split = names[i].Split(' '); 
+
+                    if (split[0].ToLower() == lastName.ToLower())
                     {
-                        isFound = false;
-                        Console.WriteLine($"{i + 1}. {names[i].ToUpper()}");
+                        isFound = true;
+                        Console.WriteLine($"{i + 1}. {names[i].ToUpper()} - {posts[i].ToUpper()}");
                     }
                 }
 
-                if (isFound)
+                if (isFound == false)
                 {
-                    Console.Write("Фамилия не найдена...");
+                    Console.Write($"Фамилия '{lastName}' не найдена...");
                 }
             }
 
