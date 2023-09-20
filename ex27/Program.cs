@@ -81,11 +81,7 @@ namespace ex27
 
         static void WriteAllDossier(string[] names, string[] posts)
         {
-            if (names.Length < 1)
-            {
-                Console.Write("Список досье пуст...");
-            }
-            else
+            if (names.Length > 0)
             {
                 Console.WriteLine("Список всех досье:");
 
@@ -93,6 +89,10 @@ namespace ex27
                 {
                     Console.WriteLine($"{i + 1}. {names[i].ToUpper()} - {posts[i].ToUpper()}");
                 }
+            }
+            else
+            {
+                Console.Write("Список досье пуст...");
             }
         }
 
@@ -104,15 +104,15 @@ namespace ex27
             Console.Write("Введите номер досье, которое хотите удалить: ");
             int deletedDossier = Convert.ToInt32(Console.ReadLine());
 
-            if (deletedDossier < 0 || deletedDossier > names.Length)
-            {
-                Console.Write("Досье под таким номером не существует...");
-            }
-            else
+            if (deletedDossier > 0 || deletedDossier <= names.Length)
             {
                 names = DecreaseArray(names, deletedDossier);
                 posts = DecreaseArray(posts, deletedDossier);
                 Console.Write($"Удаление досье под номером {deletedDossier} прошло успешно...");
+            }
+            else
+            {
+                Console.Write("Досье под таким номером не существует...");
             }
         }
 
@@ -137,11 +137,7 @@ namespace ex27
 
         static void SearchByLastName(string[] names, string[] posts)
         {
-            if (names.Length < 1)
-            {
-                Console.Write("Список досье пуст...");
-            }
-            else
+            if (names.Length > 0)
             {
                 Console.Write("Введите искомую фамилию: ");
                 string lastName = Console.ReadLine();
@@ -163,6 +159,10 @@ namespace ex27
                 {
                     Console.Write($"Фамилия '{lastName}' не найдена...");
                 }
+            }
+            else
+            {
+                Console.Write("Список досье пуст...");
             }
         }
     }
