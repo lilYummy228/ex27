@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ex27
 {
@@ -37,7 +31,7 @@ namespace ex27
                         break;
 
                     case CommandWriteAllDossier:
-                        WriteAllDossier(ref namesOfWorkers, ref postsOfWorkers);
+                        WriteAllDossier(namesOfWorkers, postsOfWorkers);
                         break;
 
                     case CommandDeleteDossier:
@@ -68,7 +62,7 @@ namespace ex27
             Console.Write("Введите вашу должность: ");
             string post = Console.ReadLine();
             names = IncreaseArray(names, name);
-            posts = IncreaseArray(posts, post);     
+            posts = IncreaseArray(posts, post);
         }
 
         static string[] IncreaseArray(string[] array, string enteredValue)
@@ -85,11 +79,11 @@ namespace ex27
             return array;
         }
 
-        static void WriteAllDossier(ref string[] names, ref string[] posts)
+        static void WriteAllDossier(string[] names, string[] posts)
         {
-            if (IsEmpty(names))
+            if (names.Length < 1)
             {
-
+                Console.Write("Список досье пуст...");
             }
             else
             {
@@ -105,41 +99,47 @@ namespace ex27
         static void DeleteDossier(ref string[] names, ref string[] posts)
         {
             Console.SetCursorPosition(0, 8);
-            WriteAllDossier(ref names, ref posts);
+            WriteAllDossier(names, posts);
             Console.SetCursorPosition(0, 0);
             Console.Write("Введите номер досье, которое хотите удалить: ");
-            int deletedNumberOfDossier = Convert.ToInt32(Console.ReadLine());
-            string tempElement;
-            string[] tempList = new string[names.Length - 1];
+            int deletedDossier = Convert.ToInt32(Console.ReadLine());
 
-            if (deletedNumberOfDossier < 0 || deletedNumberOfDossier > names.Length)
+            if (deletedDossier < 0 || deletedDossier > names.Length)
             {
                 Console.Write("Досье под таким номером не существует...");
             }
             else
             {
-                for (int i = deletedNumberOfDossier - 1; i < names.Length - 1; i++)
-                {
-                    tempElement = names[i];
-                    names[i] = names[i + 1];
-                    names[i + 1] = tempElement;
-                }
-
-                for (int i = 0; i < names.Length - 1; i++)
-                {
-                    tempList[i] = names[i];
-                }
-
-                names = tempList;
-                Console.Write($"Удаление досье под номером {deletedNumberOfDossier} прошло успешно...");
+                names = DecreaseArray(names, deletedDossier);
+                posts = DecreaseArray(posts, deletedDossier);
+                Console.Write($"Удаление досье под номером {deletedDossier} прошло успешно...");
             }
+        }
+
+        static string[] DecreaseArray(string[] array, int deletedNumber)
+        {
+            string[] tempArray = new string[array.Length - 1];
+            int index = deletedNumber - 1;
+
+            for (int i = 0; i < index; i++)
+            {
+                tempArray[i] = array[i];
+            }
+
+            for (int i = index; i < array.Length - 1; i++)
+            {
+                tempArray[i] = array[i + 1];
+            }
+
+            array = tempArray;
+            return array;
         }
 
         static void SearchByLastName(string[] names, string[] posts)
         {
-            if (IsEmpty(names))
+            if (names.Length < 1)
             {
-
+                Console.Write("Список досье пуст...");
             }
             else
             {
@@ -149,7 +149,8 @@ namespace ex27
 
                 for (int i = 0; i < names.Length; i++)
                 {
-                    string[] split = names[i].Split(' '); 
+                    char space = ' ';
+                    string[] split = names[i].Split(space);
 
                     if (split[0].ToLower() == lastName.ToLower())
                     {
@@ -163,20 +164,7 @@ namespace ex27
                     Console.Write($"Фамилия '{lastName}' не найдена...");
                 }
             }
-
-        }
-
-        static bool IsEmpty(string[] names)
-        {
-            if (names.Length < 1)
-            {
-                Console.Write("Список досье пуст...");
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }
+
